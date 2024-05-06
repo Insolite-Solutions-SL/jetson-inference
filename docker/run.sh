@@ -93,6 +93,7 @@ while :; do
             if [ "$2" ]; then
                 CONTAINER_NAME=$2
                 shift
+            fi    
             ;;
         --name=)  # handle the case of an empty flag
             die 'ERROR: "--name" requires a non-empty option argument.'
