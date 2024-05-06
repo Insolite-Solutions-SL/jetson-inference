@@ -94,10 +94,7 @@ while :; do
                 CONTAINER_NAME="--name $2"
                 shift
             fi    
-            ;;
-        --name=)  # handle the case of an empty flag
-            die 'ERROR: "--name" requires a non-empty option argument.'
-            ;;    
+            ;;   
         -c|--container)  # takes an option argument; ensure it has been specified.
             if [ "$2" ]; then
                 CONTAINER_IMAGE=$2
@@ -226,7 +223,7 @@ if [ $ARCH = "aarch64" ]; then
 		-v /var/run/avahi-daemon/socket:/var/run/avahi-daemon/socket \
 		$DISPLAY_DEVICE $V4L2_DEVICES \
 		$DATA_VOLUME $USER_VOLUME $DEV_VOLUME \
-		$CONTAINER_IMAGE $USER_COMMAND
+		$CONTAINER_IMAGE $USER_COMMAND $CONTAINER_NAME
 
 elif [ $ARCH = "x86_64" ]; then
 
@@ -239,7 +236,7 @@ elif [ $ARCH = "x86_64" ]; then
 		-e NVIDIA_DRIVER_CAPABILITIES=all \
 		$DISPLAY_DEVICE $V4L2_DEVICES \
 		$DATA_VOLUME $USER_VOLUME $DEV_VOLUME \
-		$CONTAINER_IMAGE $USER_COMMAND
+		$CONTAINER_IMAGE $USER_COMMAND $CONTAINER_NAME
 		
 fi
 
