@@ -91,7 +91,7 @@ while :; do
             ;;
         -n|--name)  # takes an option argument; ensure it has been specified.
             if [ "$2" ]; then
-                CONTAINER_NAME=$2
+                CONTAINER_NAME="--name $2"
                 shift
             fi    
             ;;
@@ -216,7 +216,7 @@ if [ $ARCH = "aarch64" ]; then
 	cat /proc/device-tree/model > /tmp/nv_jetson_model
 
 	#sudo docker run --runtime nvidia -it --rm \
-	sudo docker run --runtime nvidia --name $CONTAINER_NAME -it \
+	sudo docker run --runtime nvidia-it \
 		--network host \
 		-v /tmp/argus_socket:/tmp/argus_socket \
 		-v /etc/enctune.conf:/etc/enctune.conf \
@@ -224,20 +224,20 @@ if [ $ARCH = "aarch64" ]; then
 		-v /tmp/nv_jetson_model:/tmp/nv_jetson_model \
 		-v /var/run/dbus:/var/run/dbus \
 		-v /var/run/avahi-daemon/socket:/var/run/avahi-daemon/socket \
-		$DISPLAY_DEVICE $V4L2_DEVICES \
+		$CONTAINER_NAME $DISPLAY_DEVICE $V4L2_DEVICES \
 		$DATA_VOLUME $USER_VOLUME $DEV_VOLUME \
 		$CONTAINER_IMAGE $USER_COMMAND
 
 elif [ $ARCH = "x86_64" ]; then
 
 	#sudo docker run --gpus all -it --rm \
-	sudo docker run --gpus all --name $CONTAINER_NAME -it \
+	sudo docker run --gpus all -it \
 		--network=host \
 		--shm-size=8g \
 		--ulimit memlock=-1 \
 		--ulimit stack=67108864 \
 		-e NVIDIA_DRIVER_CAPABILITIES=all \
-		$DISPLAY_DEVICE $V4L2_DEVICES \
+		$CONTAINER_NAME $DISPLAY_DEVICE $V4L2_DEVICES \
 		$DATA_VOLUME $USER_VOLUME $DEV_VOLUME \
 		$CONTAINER_IMAGE $USER_COMMAND
 		
