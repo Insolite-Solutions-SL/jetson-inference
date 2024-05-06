@@ -22,8 +22,12 @@ show_help() {
     echo " "
     echo "   --help                       Show this help text and quit"
     echo " "
-    echo "   -c, --container DOCKER_IMAGE Specifies the name of the Docker container"
+    echo "   -c, --container DOCKER_IMAGE Specifies the name of the Docker image"
     echo "                                image to use (default: 'jetson-inference')"
+    echo " "
+    echo " "
+    echo "   -n, --name Specifies the name of the Docker container"
+    echo " "
     echo " "
     echo "   --dev  Runs the container in development mode, where the source"
     echo "          files are mounted into the container dynamically, so they"
@@ -73,6 +77,7 @@ DATA_VOLUME=" \
 --volume $PWD/$RECOGNIZER_DIR/data:$DOCKER_ROOT/$RECOGNIZER_DIR/data "
 
 # parse user arguments
+CONTAINER_NAME=""
 USER_COMMAND=""
 USER_VOLUME=""
 DEV_VOLUME=""
@@ -84,6 +89,14 @@ while :; do
             show_help
             exit
             ;;
+        -n|--name)  # takes an option argument; ensure it has been specified.
+            if [ "$2" ]; then
+                CONTAINER_NAME=$2
+                shift
+            ;;
+        --name=)  # handle the case of an empty flag
+            die 'ERROR: "--name" requires a non-empty option argument.'
+            ;;    
         -c|--container)  # takes an option argument; ensure it has been specified.
             if [ "$2" ]; then
                 CONTAINER_IMAGE=$2
@@ -185,6 +198,7 @@ print_var()
 	fi
 }
 
+print_var "CONTAINER_NAME"
 print_var "CONTAINER_IMAGE"
 print_var "ROS_DISTRO"
 print_var "DATA_VOLUME"
@@ -201,7 +215,7 @@ if [ $ARCH = "aarch64" ]; then
 	cat /proc/device-tree/model > /tmp/nv_jetson_model
 
 	#sudo docker run --runtime nvidia -it --rm \
-	sudo docker run --runtime nvidia -it \
+	sudo docker run --runtime nvidia --name $CONTAINER_NAME -it \
 		--network host \
 		-v /tmp/argus_socket:/tmp/argus_socket \
 		-v /etc/enctune.conf:/etc/enctune.conf \
@@ -216,7 +230,7 @@ if [ $ARCH = "aarch64" ]; then
 elif [ $ARCH = "x86_64" ]; then
 
 	#sudo docker run --gpus all -it --rm \
-	sudo docker run --gpus all -it \
+	sudo docker run --gpus all --name $CONTAINER_NAME -it \
 		--network=host \
 		--shm-size=8g \
 		--ulimit memlock=-1 \
