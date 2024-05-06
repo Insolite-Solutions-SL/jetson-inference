@@ -213,7 +213,7 @@ if [ $ARCH = "aarch64" ]; then
 	cat /proc/device-tree/model > /tmp/nv_jetson_model
 
 	#sudo docker run --runtime nvidia -it --rm \
-	sudo docker run --runtime nvidia -it \
+	sudo docker run --runtime nvidia -it $CONTAINER_NAME \
 		--network host \
 		-v /tmp/argus_socket:/tmp/argus_socket \
 		-v /etc/enctune.conf:/etc/enctune.conf \
@@ -223,12 +223,12 @@ if [ $ARCH = "aarch64" ]; then
 		-v /var/run/avahi-daemon/socket:/var/run/avahi-daemon/socket \
 		$DISPLAY_DEVICE $V4L2_DEVICES \
 		$DATA_VOLUME $USER_VOLUME $DEV_VOLUME \
-		$CONTAINER_IMAGE $CONTAINER_NAME $USER_COMMAND
+		$CONTAINER_IMAGE $USER_COMMAND
 
 elif [ $ARCH = "x86_64" ]; then
 
 	#sudo docker run --gpus all -it --rm \
-	sudo docker run --gpus all -it \
+	sudo docker run --gpus all -it $CONTAINER_NAME \
 		--network=host \
 		--shm-size=8g \
 		--ulimit memlock=-1 \
@@ -236,7 +236,7 @@ elif [ $ARCH = "x86_64" ]; then
 		-e NVIDIA_DRIVER_CAPABILITIES=all \
 		$DISPLAY_DEVICE $V4L2_DEVICES \
 		$DATA_VOLUME $USER_VOLUME $DEV_VOLUME \
-		$CONTAINER_IMAGE $CONTAINER_NAME $USER_COMMAND
+		$CONTAINER_IMAGE $USER_COMMAND
 		
 fi
 
