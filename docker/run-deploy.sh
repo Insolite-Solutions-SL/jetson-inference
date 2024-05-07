@@ -212,7 +212,7 @@ if [ $ARCH = "aarch64" ]; then
 	# /proc or /sys files aren't mountable into docker
 	cat /proc/device-tree/model > /tmp/nv_jetson_model
 
-	sudo docker run --runtime nvidia -id $CONTAINER_NAME \
+	sudo docker run --runtime nvidia -idt $CONTAINER_NAME \
 		--network host \
 		-v /tmp/argus_socket:/tmp/argus_socket \
 		-v /etc/enctune.conf:/etc/enctune.conf \
@@ -226,7 +226,7 @@ if [ $ARCH = "aarch64" ]; then
 
 elif [ $ARCH = "x86_64" ]; then
 
-	sudo docker run --gpus all -id $CONTAINER_NAME \
+	sudo docker run --gpus all -idt $CONTAINER_NAME \
 		--network=host \
 		--shm-size=8g \
 		--ulimit memlock=-1 \
